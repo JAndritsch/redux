@@ -151,10 +151,9 @@ class CurrentItem extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { index } = ownProps;
+const mapStateToProps = (state) => {
   return {
-    currentItem: state.items[index]
+    currentItem: state.items[state.currentItemIndex]
   };
 };
 
