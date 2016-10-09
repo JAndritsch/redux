@@ -63,7 +63,7 @@ export default connect(mapStateToProps)(App);
 
 In this example, a connection to the Redux state is maintained at the top-level `App` component.  This means that any time `someState` changes, the `App` component and all of its children will be rendered.
 
-Since the `Child1` component is the only component that's interested in the `someState` prop, it would be wasteful to have the connection at the `App` level because we would be re-rendering the `Child2` component as well. To prevent the `App` and other children that aren't interested in `someState` from extraneous renders, we can move the subscription to the Redux store a level down into the component that needs it. In this case, that would be `Child1`.
+Since the `Child1` component is the only component that's interested in the `someState` prop, it would be wasteful to have the connection at the `App` level because we would be re-rendering the `App` and `Child2` components as well. To prevent the `App` and other children that aren't interested in `someState` from extraneous renders, we can move the subscription to the Redux store a level down into the component that needs it. In this case, that would be `Child1`.
 
 Example:
 
@@ -104,7 +104,7 @@ class App extends React.Component {
 export default App;
 ```
 
-Now when `someState` changes, only the `Child` component will re-render.
+Now when `someState` changes, only the `Child1` component will re-render.
 
 Although this approach may result in having many more components connected to state, it's still better performance-wise than having one connection at the highest level of your application.
 
