@@ -175,7 +175,7 @@ export default (state = 0, action) => {
 };
 ```
 
-In this example, we have a list of `items` and a `currentItemIndex` in our state. Our `CurrentItem` component is used to represent the active or current item being looked at (only one item is visible at a time). Let's pretend that the `currentItemIndex` can state change rapidly, say via keystroke. Whenever the user presses the left arrow key, an action fires that decrements the `currentItemIndex`. When the right arrow key is pressed, the `currentItemIndex` gets incremented.
+In this example, we have a list of `items` and a `currentItemIndex` in our state. Our `CurrentItem` component is used to represent the active or current item being looked at (only one item is visible at a time). Let's pretend that the `currentItemIndex` state can change rapidly, say via keystroke. Whenever the user presses the left arrow key, an action fires that decrements the `currentItemIndex`. When the right arrow key is pressed, the `currentItemIndex` gets incremented.
 
 Our connected component does not define `shouldComponentUpdate`. It instead relies on the default one provided by React Redux. Consider what would happen if we were viewing the first item in the list and then pressed the right arrow key to dispatch the following action:
 
@@ -185,7 +185,7 @@ Our connected component does not define `shouldComponentUpdate`. It instead reli
 }
 ```
 
-When the reducer runs, it will get the current index (which is 0), then return that number incremented by 1. React Redux would recognize that the `currentItemIndex` state has changed and pass the new value to the connected component for a re-render.  But if we look at what information our component consumes, we can see that both the previous item and the next item have the exact same attributes (with the exception of `id` prop). 
+When the reducer runs, it will get the current index (which is 0), then return that number incremented by 1. React Redux would recognize that the `currentItemIndex` state has changed and pass the new value to the connected component for a re-render.  But if we look at what information our component consumes, we can see that both the previous item and the next item have the exact same attributes (with the exception of the `id` prop). 
 
 
 The item we started at:
@@ -230,7 +230,7 @@ With that logic in place, our component will only re-render itself if the `color
 
 ## Use `initialProps` when possible
 
-You are probably familiar with mapStateToProps when connecting a component to your Redux state. In a simple Todo application, you may have a component connected to state via the following code:
+You are probably familiar with `mapStateToProps` when connecting a component to your Redux state. In a simple todo application, you may have a component connected to state via the following code:
 
 ```js
 class TodoItem extends React.Component {}
@@ -251,7 +251,7 @@ export default connect(mapStateToProps)(TodoItem);
 // Ex usage: <TodoItem id="123" />;
 ```
 
-In this example, our mapStateToProps serves as a means to obtain the specific TodoItem from our todos state via the id property. As you can see, the `id` property is static and will never change.
+In this example, our `mapStateToProps` serves as a means to obtain the specific `TodoItem` from our `todos` state via the `id` property. As you can see, the `id` property is static and will never change.
 
 Instead of defining `mapStateToProps` as a function that returns an object, you can instead define a factory function that returns your `mapStateToProps` function. Here's what that might look like:
 
