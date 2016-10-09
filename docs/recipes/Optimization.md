@@ -253,7 +253,7 @@ export default connect(mapStateToProps)(TodoItem);
 
 In this example, our `mapStateToProps` serves as a means to obtain the specific `TodoItem` from our `todos` state via the `id` property. As you can see, the `id` property is static and will never change.
 
-Instead of defining `mapStateToProps` as a function that returns an object, you can instead define a factory function that returns your `mapStateToProps` function. Here's what that might look like:
+Instead of defining `mapStateToProps` as a function that returns an object, you can define a factory function that returns your `mapStateToProps` function. Here's what that might look like:
 
 ```js
 const makeMapStateToProps = (initialState, initialOwnProps) => {
@@ -271,7 +271,7 @@ const makeMapStateToProps = (initialState, initialOwnProps) => {
 export default connect(makeMapStateToProps)(TodoItem);
 ```
 
-The reason you may consider doing this is due to the performance implications of calculating props in your `mapStateToProps` function. Since the `id` property of the TodoItem is static, we can expect that it won't ever need to be recalculated once set.
+The reason you may consider doing this is due to the performance implications of calculating props in your `mapStateToProps` function. Since the `id` property of the `TodoItem` is static, we can expect that it won't ever need to be recalculated once set.
 
 ## Normalize your data
 
