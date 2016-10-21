@@ -293,7 +293,7 @@ export default (state = [], action) => {
 };
 ```
 
-This reducer handles the action type `FILTER_BY_COLOR` by taking the color provided from the action and returns a new array representing the filtered items. Consider what would happen when the following action dispatches:
+This reducer handles the action type `FILTER_BY_COLOR` by taking the color provided from the action and returning a new array representing the filtered items. Consider what would happen when the following action dispatches:
 
 ```js
 {
@@ -302,7 +302,7 @@ This reducer handles the action type `FILTER_BY_COLOR` by taking the color provi
 }
 ```
 
-When the reducer executes, we'll iterate over `allItems` and select only the ones that are blue. But what happens if that action fires again, or perhaps even multiple times in succession? When the reducer fires, it will loop again over `allItems` to find the blue ones. While this may not seem like a big deal at first, consider what happens if our list contains 50,000 items. We'd effectively be iterating over that collection and running the same calculation over and over again. Wouldn't it be much more efficient if our code could remember that it already performed this calculation before?
+When the reducer executes, it will iterate over `allItems` and select only the ones that are blue. But what happens if that action fires again, or perhaps even multiple times in succession, executing that same loop multiple times? While this may not seem like a big deal at first, consider what happens if our list contains 50,000 items. We'd effectively be iterating over that collection and running the same calculation over and over again. Wouldn't it be much more efficient if our code could remember that it already performed this calculation before?
 
 That's where memoization helps. Memoization is a technique that allows your code to avoid recomputation of outputs when given previously supplied inputs. 
 
