@@ -110,7 +110,7 @@ Although this approach may result in having many more components connected to st
 
 ## Redefine `shouldComponentUpdate` when needed
 
-By default, components connected to state via React Redux's `connect` method are automatically given an implementation for `shouldComponentUpdate`. I won't go into grave detail about what the implementation is, but the gist of it is that any changes to the state your component connects to will result in `shouldComponentUpdate` returning `true`. While this implementation may work for some components, there may be times where that default behavior may not be fast enough for your application.
+By default, components connected to state via React Redux's `connect` method are automatically given an implementation for `shouldComponentUpdate`. I won't go into implementation details, but the gist of it is that any changes to the state your component connects to will result in `shouldComponentUpdate` returning `true`. While this implementation may work for some components, there may be times where that default behavior may not be fast enough for your application.
 
 One example of where this may apply is in singleton components that are used to display information for several objects. By "singleton" components, I'm referring to a connected component that's instantiated one time and is reused by several objects in state.
 
@@ -273,10 +273,70 @@ export default connect(makeMapStateToProps)(TodoItem);
 
 The reason you may consider doing this is due to the performance implications of calculating props in your `mapStateToProps` function. Since the `id` property of the `TodoItem` is static, we can expect that it won't ever need to be recalculated once set.
 
+## Use memoization for computation heavy functions
+
+In Redux applications, the majority of computation will probably take place in your reducers. As we know, reducers are meant to accept a current state, then translate an action into the next piece of state. Often times, these computations are simple and happen very quickly.
+
+Here's an example showing a reducer for a collection of items:
+
+```js
+// reducers/filteredItems.js
+const allItems = []; // The complete list of items (assume this never changes)
+
+export default (state = [], action) => {
+  switch (action.type) {
+    case 'FILTER_BY_COLOR':
+      return allItems.filter(item => item.color === action.color);
+    default:
+      return state;
+  }
+};
+```
+
+This reducer handles the action type `FILTER_BY_COLOR` by taking the color provided from the action and returns a new array representing the filtered items. Consider what would happen when the following action dispatches:
+
+```js
+{
+  type: 'FILTER_BY_COLOR',
+  color: 'Blue'
+}
+```
+
+When the reducer executes, we'll iterate over `allItems` and select only the ones that are blue. But what happens if that action fires again, or perhaps even multiple times in succession? When the reducer fires, it will loop again over `allItems` to find the blue ones. While this may not seem like a big deal at first, consider what happens if our list contains 50,000 items. We'd effectively be iterating over that collection and running the same calculation over and over again. Wouldn't it be much more efficient if our code could remember that it already performed this calculation before?
+
+That's where memoization helps. Memoization is a technique that allows your code to avoid recomputation of outputs when given previously supplied inputs. 
+
+Here's a rudimentary example of adding memoization to our reducer:
+
+```js
+const allItems = [];
+
+const previousResults = {}; // a cache to hold the previous calculations
+
+export default (state = [], action) => {
+  switch (action.type) {
+    case 'FILTER_BY_COLOR':
+      let color = { action };
+      if (previousResults[color]) {
+        // We've already done this calculation once, so just return a copy of the previous result.
+        return previousResults[color].slice(0); 
+      } else {
+        // First time. Do the calculation once and then save the results.
+        let filtered = allItems.filter(item => item.color === action.color);
+        previousResults[color] = filtered;
+        return filtered;
+      }
+    default:
+      return state;
+  }
+};
+```
+
+With those changes in place, our filtering logic will only fire once and subsequent calls to filter for blue items will use the results from the first calculation.
+
+If you're interested in learning better ways to introduce memoization in your Redux application then check out [Reselect](https://github.com/reactjs/reselect).
+
 ## Normalize your data
 
 WIP
 
-## Use memoization for computation heavy functions
-
-WIP
